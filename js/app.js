@@ -23,7 +23,7 @@ Enemy.prototype.update = function(dt) {
     var difX = Math.abs(this.x - player.x);
     var difY = Math.abs(this.x - player.x);
     if(difX < this.collisionBuff && difY < this.collisionBuff){
-        player.y = 300;
+        // player.y = 300;
     }
 
 };
@@ -37,9 +37,13 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
-    this.x = 100;
-    this.y = 0;
-    this.movement = 100;
+    this.offsetY = 15;
+    this.startX = 200;
+    this.startY = 290.5;
+    this.x = this.startX;
+    this.y = this.startY + this.offsetY;
+    this.movementX = 100;
+    this.movementY = 83;
     this.sprite = 'images/char-horn-girl.png';
 }
 
@@ -54,18 +58,20 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
     switch(key){
         case 'left':
-            this.x -= this.movement;
+            this.x -= this.movementX;
             break;
         case 'right':
-            this.x += this.movement;
+            this.x += this.movementX;
             break;
         case 'down':
-            this.y += this.movement;
+            this.y += this.movementY;
             break;
         case 'up':
-            this.y -= this.movement;
+            this.y -= this.movementY;
             break;
     }
+
+
 }
 
 // Now instantiate your objects.
