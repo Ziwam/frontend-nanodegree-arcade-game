@@ -47,7 +47,7 @@ var Player = function() {
     this.sprite = 'images/char-horn-girl.png';
 }
 
-Player.prototype.update = function(dt) {
+Player.prototype.update = function() {
     
 }
 
@@ -70,7 +70,11 @@ Player.prototype.handleInput = function(key) {
             this.y -= this.movementY;
             break;
     }
-
+    console.log(this.x+', '+this.y);
+    //limit players X-axis movement;
+    this.x = Math.min(400, Math.max(0, this.x));
+    //limit players Y-axis movement;
+    this.y = Math.min(388.5, Math.max(-26.5, this.y));
 
 }
 
