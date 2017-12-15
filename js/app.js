@@ -25,6 +25,9 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
+    this.x = 0;
+    this.y = 0;
+    this.movement = 100;
     this.sprite = 'images/char-horn-girl.png';
 }
 
@@ -39,12 +42,16 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
     switch(key){
         case 'left':
+            this.x -= this.movement;
             break;
         case 'right':
+            this.x += this.movement;
             break;
         case 'down':
+            this.y += this.movement;
             break;
         case 'up':
+            this.y -= this.movement;
             break;
     }
 }
