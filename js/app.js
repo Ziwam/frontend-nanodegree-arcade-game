@@ -46,7 +46,8 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function() {
+var Player = function(round = 0) {
+    this.turn = round;
     this.offsetY = 15;
     this.startX = 200;
     this.startY = 290.5;
@@ -58,14 +59,22 @@ var Player = function() {
 }
 
 Player.prototype.update = function() {
-    
+    if(this.y <= -20) {
+        this.x = this.startX;
+        this.y = this.startY + this.offsetY;
+        this.turn = this.turn++ == 4 ? 0 : this.turn;
+        this.render();    
+        allEnemies.push(new Enemy());
+        bug_counter.text('Bugs: '+allEnemies.length);
+    }
 }
 
-Player.prototype.render = function(index = 0) {
-    ctx.drawImage(Resources.get(this.sprite[index]), this.x, this.y);
+Player.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite[this.turn]), this.x, this.y);
 }
 
 Player.prototype.handleInput = function(key) {
+
     switch(key){
         case 'left':
             this.x -= this.movementX;
@@ -92,9 +101,8 @@ Player.prototype.handleInput = function(key) {
 // Place the player object in a variable called player
 var player = new Player();
 var allEnemies = [];
-for (var i = 0; i < 4; i++) {
-    allEnemies.push(new Enemy());
-}
+allEnemies.push(new Enemy());
+var bug_counter = $('.bug_count');
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
