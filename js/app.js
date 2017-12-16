@@ -1,35 +1,35 @@
 // Enemies our player must avoid
 var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
+    // Offset for displaying sprite
     this.offsetY = 20;
+    // List of enemy starting y-axis positions
     this.startY = [41.5,124.5,207.5];
-    // this.startX = Math.random() * ((-100) - (-300)) + (-300);
+    // Gives enemy random x-axis starting point
     this.x = Math.random() * ((-100) - (-300)) + (-300);
+    // randomly gives enemy y-axis starting point from list
     this.y = this.startY[Math.floor(Math.random()*this.startY.length)] + this.offsetY;
+    // Sets speed of enemy from range
     this.speed = Math.random() * (400 - 150) + 150;
+    // Buffer zone for detecting player collision
     this.collisionBuff = 50;
     this.sprite = 'images/enemy-bug.png';
 };
 
-// Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+    // Creates movement based on enemies speed * delta time
     this.x += this.speed*dt;
-
+    // Gets the difference between the enemy's and player's x-axis
     var difX = Math.abs(this.x - player.x);
+    // Gets the difference between the enemy's and player's y-axis
     var difY = Math.abs((this.y-this.offsetY) - (player.y-player.offsetY));
+    // If difference in x-axis & y-axis are less than the enemies collision buffer zone, then reset player's position to start 
     if(difX < this.collisionBuff && difY < this.collisionBuff){
         player.y = player.startY + player.offsetY;
         player.x = player.startX;
     }
 
+    // Checks to see if enemy is past position 600 on x-axis and brings it back to random starting point
     if(this.x > 600){
         this.x = Math.random() * ((-100) - (-300)) + (-300);
         this.y = this.startY[Math.floor(Math.random()*this.startY.length)] + this.offsetY;
@@ -38,7 +38,7 @@ Enemy.prototype.update = function(dt) {
 
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the enemy on the screen
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
@@ -46,35 +46,45 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(round = 0) {
-    this.turn = round;
+var Player = function(index = 0) {
+    // Sets player's sprite index
+    this.spriteIndex = index;
+    // Offset for displaying sprite
     this.offsetY = 15;
+    // Starting position for player
     this.startX = 200;
     this.startY = 290.5;
+    // Current position of player
     this.x = this.startX;
     this.y = this.startY + this.offsetY;
+    // Movement speed for player for both axes
     this.movementX = 100;
     this.movementY = 83;
+    // List of sprites for player
     this.sprite = ['images/char-horn-girl.png','images/char-cat-girl.png','images/char-pink-girl.png','images/char-princess-girl.png','images/char-boy.png'];
 }
 
 Player.prototype.update = function() {
+    // Checks if player successfully past enemy zone
     if(this.y <= -20) {
         this.x = this.startX;
         this.y = this.startY + this.offsetY;
-        this.turn = this.turn++ == 4 ? 0 : this.turn;
-        this.render();    
+        this.spriteIndex = this.spriteIndex++ == 4 ? 0 : this.spriteIndex;
+        // Re-renders player with new sprite
+        this.render();
+        // Adds new enemy to enemy list
         allEnemies.push(new Enemy());
+        // Changes counter text to represent number of enemies in enemy list
         bug_counter.text('Bugs: '+allEnemies.length);
     }
 }
 
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite[this.turn]), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite[this.spriteIndex]), this.x, this.y);
 }
 
 Player.prototype.handleInput = function(key) {
-
+    // Checks the string passed and adds movment to current position
     switch(key){
         case 'left':
             this.x -= this.movementX;
@@ -89,23 +99,22 @@ Player.prototype.handleInput = function(key) {
             this.y -= this.movementY;
             break;
     }
-    //limit players X-axis movement;
+    //limit players x-axis movement;
     this.x = Math.min(400, Math.max(0, this.x));
-    //limit players Y-axis movement;
+    //limit players y-axis movement;
     this.y = Math.min(388.5, Math.max(-26.5, this.y));
 
 }
-
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+// Creates a new player object
 var player = new Player();
+// Creates enemies list and pushes new enem object
 var allEnemies = [];
 allEnemies.push(new Enemy());
+// Passes bug counter html
 var bug_counter = $('.bug_count');
 
 // This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+// Player.handleInput() method.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
