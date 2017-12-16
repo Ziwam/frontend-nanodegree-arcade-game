@@ -5,10 +5,13 @@ var Enemy = function() {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.x = 0;
-    this.y = 0;
-    this.speed = 80;
-    this.collisionBuff = 30;
+    this.offsetY = 20;
+    this.startY = [41.5,124.5,207.5];
+    // this.startX = Math.random() * ((-100) - (-300)) + (-300);
+    this.x = Math.random() * ((-100) - (-300)) + (-300);
+    this.y = this.startY[Math.floor(Math.random()*this.startY.length)] + this.offsetY;
+    this.speed = Math.random() * (400 - 150) + 150;
+    this.collisionBuff = 50;
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -21,9 +24,16 @@ Enemy.prototype.update = function(dt) {
     this.x += this.speed*dt;
 
     var difX = Math.abs(this.x - player.x);
-    var difY = Math.abs(this.x - player.x);
+    var difY = Math.abs((this.y-this.offsetY) - (player.y-player.offsetY));
     if(difX < this.collisionBuff && difY < this.collisionBuff){
-        // player.y = 300;
+        player.y = player.startY + player.offsetY;
+        player.x = player.startX;
+    }
+
+    if(this.x > 600){
+        this.x = Math.random() * ((-100) - (-300)) + (-300);
+        this.y = this.startY[Math.floor(Math.random()*this.startY.length)] + this.offsetY;
+        this.speed = Math.random() * (400 - 150) + 150;
     }
 
 };
@@ -44,15 +54,15 @@ var Player = function() {
     this.y = this.startY + this.offsetY;
     this.movementX = 100;
     this.movementY = 83;
-    this.sprite = 'images/char-horn-girl.png';
+    this.sprite = ['images/char-horn-girl.png','images/char-cat-girl.png','images/char-pink-girl.png','images/char-princess-girl.png','images/char-boy.png'];
 }
 
 Player.prototype.update = function() {
     
 }
 
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+Player.prototype.render = function(index = 0) {
+    ctx.drawImage(Resources.get(this.sprite[index]), this.x, this.y);
 }
 
 Player.prototype.handleInput = function(key) {
@@ -70,7 +80,6 @@ Player.prototype.handleInput = function(key) {
             this.y -= this.movementY;
             break;
     }
-    console.log(this.x+', '+this.y);
     //limit players X-axis movement;
     this.x = Math.min(400, Math.max(0, this.x));
     //limit players Y-axis movement;
@@ -83,7 +92,7 @@ Player.prototype.handleInput = function(key) {
 // Place the player object in a variable called player
 var player = new Player();
 var allEnemies = [];
-for (var i = 0; i < 1; i++) {
+for (var i = 0; i < 4; i++) {
     allEnemies.push(new Enemy());
 }
 
